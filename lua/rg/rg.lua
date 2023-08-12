@@ -64,6 +64,10 @@ local function parse_flags(flags)
 end
 
 function M.rg(pattern, flags, path)
+  if _config.rg_not_found then
+    vim.notify('✗ [rg] ripgrep not found on the system', vim.log.levels.ERROR)
+    return
+  end
   local command = vim.tbl_flatten({ rg_root_cmd, flags, pattern, path })
   vim.notify(string.format('… running [%s]', vim.inspect(command), lvl.DEBUG))
   vim.system(command, { text = true }, async_exit)
@@ -84,6 +88,10 @@ local filters = {
 }
 
 function M.rgui(path)
+  if _config.rg_not_found then
+    vim.notify('✗ [rg] ripgrep not found on the system', vim.log.levels.ERROR)
+    return
+  end
   vim.ui.select({ 'default', 'smart', 'sensitive', 'ignore' }, {
     prompt = 'case',
   }, function(c_mode)

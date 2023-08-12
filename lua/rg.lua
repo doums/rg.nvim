@@ -9,6 +9,10 @@ local M = {}
 
 function M.setup(config)
   config = cfg.init(config or {})
+  if vim.fn.executable('rg') ~= 1 then
+    vim.notify('✗ [rg] ripgrep not found on the system', vim.log.levels.WARN)
+    config.rg_not_found = true
+  end
   rg.init(config)
 end
 
