@@ -87,6 +87,12 @@ quickfix list with the match(es)
 
 `rg(pattern`: string`, flags`: listOf[IHSsi]`, path`: string`)`
 
+Example
+
+```lua
+require('rg').rg('a pattern', { 'H', 'I' }, '/a/path')
+```
+
 #### `rgui`
 
 `rgui(path`: string?`)`
