@@ -99,9 +99,8 @@ a specific path.
 
 Example with [nvim-tree](https://github.com/nvim-tree/nvim-tree.lua)
 
-In the files'tree window press `<C-f>` to search in the directory
-under the cursor or in the above directory level for a file under
-the cursor
+In the files'tree window press `<C-f>` to search in the
+directory/file under the cursor
 
 ```lua
 -- nvim-tree config
