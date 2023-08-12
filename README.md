@@ -79,7 +79,7 @@ Same flags as `Rgf`
 
 ### API
 
-The plugin module exposes the following methods. Each of the them
+The plugin module exposes the following methods. Each of them
 spawn `rg` with the supplied arguments and then populates the
 quickfix list with the match(es)
 
