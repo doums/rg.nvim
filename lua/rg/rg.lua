@@ -54,13 +54,16 @@ end)
 
 -- Throws an error on unknown flags
 local function parse_flags(flags)
-  return vim.iter.map(function(flag)
-    if not _flags[flag] then
-      error(flag, 0)
-      return nil
-    end
-    return '--' .. _flags[flag].l
-  end, flags)
+  return vim
+    .iter(flags)
+    :map(function(flag)
+      if not _flags[flag] then
+        error(flag, 0)
+        return nil
+      end
+      return '--' .. _flags[flag].l
+    end)
+    :totable()
 end
 
 function M.rg(pattern, flags, path)
@@ -68,7 +71,8 @@ function M.rg(pattern, flags, path)
     vim.notify('✗ [rg] ripgrep not found on the system', vim.log.levels.ERROR)
     return
   end
-  local command = vim.tbl_flatten({ rg_root_cmd, flags, pattern, path })
+  local command =
+    vim.iter({ rg_root_cmd, flags, pattern, path }):flatten():totable()
   vim.notify(string.format('… running [%s]', vim.inspect(command), lvl.DEBUG))
   vim.system(command, { text = true }, async_exit)
 end
@@ -108,8 +112,9 @@ function M.rgui(path)
         if not pattern then
           return
         end
-        local flags =
-          parse_flags(vim.tbl_flatten({ case_modes[c_mode], filters[f_mode] }))
+        local flags = parse_flags(
+          vim.iter({ case_modes[c_mode], filters[f_mode] }):flatten():totable()
+        )
         M.rg(pattern, flags, path)
       end)
     end)
