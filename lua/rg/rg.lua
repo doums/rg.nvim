@@ -8,24 +8,14 @@ local lvl = vim.log.levels
 local rg_root_cmd = { 'rg', '--vimgrep' }
 local _config
 
-local _mt = {}
 local _flags = {
-  hidden = { l = 'hidden', s = 'H' },
-  no_ignore = { l = 'no-ignore', s = 'I' },
-  case_sensitive = { l = 'case-sensitive', s = 's' },
-  ignore_case = { l = 'ignore-case', s = 'i' },
-  smart_case = { l = 'smart-case', s = 'S' },
+  H = 'hidden',
+  I = 'no-ignore',
+  S = 'smart-case',
+  s = 'case-sensitive',
+  i = 'ignore-case',
+  E = '', -- add excluded glob files
 }
-
--- metamethod to index flags by `s` value
-function _mt:__index(flag)
-  for _, f in next, self do
-    if f.s == flag then
-      return f
-    end
-  end
-end
-setmetatable(_flags, _mt)
 
 local async_exit = vim.schedule_wrap(function(obj)
   local code = obj.code
@@ -52,6 +42,15 @@ local async_exit = vim.schedule_wrap(function(obj)
   end
 end)
 
+local function get_excluded_flags()
+  return vim
+    .iter(_config.excluded)
+    :map(function(file)
+      return '-g!' .. file
+    end)
+    :totable()
+end
+
 -- Throws an error on unknown flags
 local function parse_flags(flags)
   return vim
@@ -61,8 +60,12 @@ local function parse_flags(flags)
         error(flag, 0)
         return nil
       end
-      return '--' .. _flags[flag].l
+      if flag == 'E' then
+        return get_excluded_flags()
+      end
+      return '--' .. _flags[flag]
     end)
+    :flatten()
     :totable()
 end
 
@@ -73,7 +76,10 @@ function M.rg(pattern, flags, path)
   end
   local command =
     vim.iter({ rg_root_cmd, flags, pattern, path }):flatten():totable()
-  vim.notify(string.format('… running [%s]', vim.inspect(command), lvl.DEBUG))
+  vim.notify(
+    string.format('… running [%s] ', vim.iter(command):join(' ')),
+    lvl.INFO
+  )
   vim.system(command, { text = true }, async_exit)
 end
 
@@ -135,7 +141,7 @@ local function pick_flags(fargs)
   local res, p_flags = pcall(parse_flags, vim.split(flags, ''))
   if not res then
     vim.notify(
-      string.format('✕ [rg] unknown flags "%s", expected [HISsi]', p_flags),
+      string.format('✕ [rg] unknown flags "%s", expected [HISsiE]', p_flags),
       lvl.ERROR
     )
     return nil

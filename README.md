@@ -22,6 +22,16 @@ require('rg').setup({
   -- Optional function to be used to format the items in the
   -- quickfix window (:h 'quickfixtextfunc')
   qf_format = nil,
+  -- Glob list of excluded files and directories when the special
+  -- `E` flag is set (it uses the `--glob !*` flag of rg)
+  excluded = {
+    '.idea',
+    'node_modules',
+    '.git',
+    'target',
+    'package-lock.json',
+    'Cargo.lock',
+  },
 })
 ```
 
@@ -62,6 +72,7 @@ Available flags:
 - `S` → `--smart-case`
 - `s` → `--case-sensitive`
 - `i` → `--ignore-case`
+- `E` → exclude the glob list of files and directories
 
 ```
 :Rgf HIs a pattern
@@ -85,7 +96,7 @@ quickfix list with the match(es)
 
 #### `rg`
 
-`rg(pattern`: string`, flags`: listOf[IHSsi]`, path`: string`)`
+`rg(pattern`: string`, flags`: listOf[IHSsiE]`, path`: string`)`
 
 Example
 
@@ -124,4 +135,3 @@ end
 ### License
 
 Mozilla Public License 2.0
-
