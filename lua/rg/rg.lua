@@ -10,11 +10,12 @@ local _config
 
 local _flags = {
   H = 'hidden',
+  h = '', -- alias for '--hidden' and globs excluded files
   I = 'no-ignore',
   S = 'smart-case',
   s = 'case-sensitive',
   i = 'ignore-case',
-  E = '', -- add excluded glob files
+  e = '', -- add globs excluded files
 }
 
 local async_exit = vim.schedule_wrap(function(obj)
@@ -60,12 +61,15 @@ local function parse_flags(flags)
         error(flag, 0)
         return nil
       end
-      if flag == 'E' then
+      if flag == 'h' then
+        return { '--hidden', get_excluded_flags() }
+      end
+      if flag == 'e' then
         return get_excluded_flags()
       end
       return '--' .. _flags[flag]
     end)
-    :flatten()
+    :flatten(2)
     :totable()
 end
 
@@ -141,7 +145,7 @@ local function pick_flags(fargs)
   local res, p_flags = pcall(parse_flags, vim.split(flags, ''))
   if not res then
     vim.notify(
-      string.format('✕ [rg] unknown flags "%s", expected [HISsiE]', p_flags),
+      string.format('✕ [rg] unknown flags "%s", expected [HhISsie]', p_flags),
       lvl.ERROR
     )
     return nil

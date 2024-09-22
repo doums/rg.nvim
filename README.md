@@ -23,7 +23,7 @@ require('rg').setup({
   -- quickfix window (:h 'quickfixtextfunc')
   qf_format = nil,
   -- Glob list of excluded files and directories when the special
-  -- `E` flag is set (it uses the `--glob !*` flag of rg)
+  -- `e` flag is set (it uses the `--glob !*` flag of rg)
   excluded = {
     '.idea',
     'node_modules',
@@ -69,10 +69,11 @@ Available flags:
 
 - `I` → `--no-ignore`
 - `H` → `--hidden`
+- `h` → `--hidden` and glob list of excluded files and directories
 - `S` → `--smart-case`
 - `s` → `--case-sensitive`
 - `i` → `--ignore-case`
-- `E` → exclude the glob list of files and directories
+- `e` → glob list of excluded files and directories
 
 ```
 :Rgf HIs a pattern

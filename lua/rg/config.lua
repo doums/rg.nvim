@@ -10,7 +10,7 @@ local _config = {
   -- quickfix window (:h 'quickfixtextfunc')
   qf_format = nil,
   -- Glob list of excluded files and directories when the special
-  -- `E` flag is set (it uses the `--glob !*` flag of rg)
+  -- `e` flag is set (it uses the `--glob !*` flag of rg)
   excluded = {
     '.idea',
     'node_modules',
